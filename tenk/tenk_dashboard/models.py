@@ -61,18 +61,18 @@ class Participant(models.Model):
     gender = models.ForeignKey(Gender)
 
     #Fields
-    activeid = models.IntegerField(max_length=12)
-    bibnumber = models.IntegerField(max_length=4)
+    activeid = models.IntegerField(max_length=12, unique=True, blank=True, null=True)
+    bib_number = models.IntegerField(max_length=4, unique=True)
     last_name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
-    address_1 = models.CharField(max_length=255)
-    address_2 = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    address_1 = models.CharField(max_length=255, blank=True, null=True)
+    address_2 = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=2)
-    zipcode = models.IntegerField(max_length=5)
-    email = models.EmailField(max_length=255)
+    zipcode = models.IntegerField(max_length=5, blank=True, null=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
     age = IntegerRangeField(max_length=3, min_value=1, max_value=99)
-    team_name = models.CharField(max_length=255)
+    team_name = models.CharField(max_length=255, blank=True, null=True)
     timestamp = models.DateTimeField()
 
     def __unicode__(self):
@@ -83,7 +83,7 @@ class ParticipantForm(ModelForm):
     class Meta:
         model = Participant
         #Render order of fields
-        fields = ('bibnumber', 'last_name', 'first_name','address_1',
+        fields = ('bib_number', 'last_name', 'first_name','address_1',
                   'address_2','zipcode','city','state','email','age',
                   'gender', 'shirt_size','event','team_name', 'division',
                   'registration_type')

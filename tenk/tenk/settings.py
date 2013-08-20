@@ -102,9 +102,7 @@ ROOT_URLCONF = 'tenk.urls'
 WSGI_APPLICATION = 'tenk.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.abspath(os.path.join(ROOT_PATH, 'templates'))
 )
 
 INSTALLED_APPS = (
@@ -177,4 +175,5 @@ if DEBUG:
     }
 
 
-AGE_RANGES=[0,12,17,24,34,44,59,99]
+AGE_RANGES = [0,12,17,24,34,44,59,99]
+DEFAULT_BIB = 100

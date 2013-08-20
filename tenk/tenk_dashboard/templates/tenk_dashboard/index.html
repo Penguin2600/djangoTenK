@@ -1,42 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Tenk Data entry</title>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
-</head>
 
-<body>
+{% extends "base.html" %}
 
-    <div id="wrap">
-        <div class="container">
+{% block header %}Participant Entry Form{% endblock %}
 
-            <div class="page-header">
-                <h1>Ten K Entry Form</h1>
-            </div>
-        </div>
+{% block content %}
 
-
-        <form id="createform" action="{% url 'index' %}" method="post" enctype="multipart/form-data" class="form-input">
+        <form id="createform" action="{% url 'create' %}" method="post" enctype="multipart/form-data" class="form-input">
+            {% csrf_token %}
             {% for field in form %}
+                {{ field.errors }}<br>
                 {{ field.label_tag }} {{ field }}<br/>
             {% endfor %}
+            <input type="submit" value="Submit" class="btn btn-primary btn-large submitbtn">
         </form>
 
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-
-    </div>
-    <div id="push"></div>
-</div>
-
-<div id="footer">
-    <div class="container">
-        <p class="muted credit">© 2083 Charles Bock</p>
-    </div>
-</div>
-
-</body>
-</html>
+{% endblock %}

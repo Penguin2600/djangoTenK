@@ -73,16 +73,49 @@ label {
 
 .submitbtn
 {
-  width: 800px;
+  width: 300px !important;
   display: block;
+  margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
 }
 
+ul.errorlist{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+ul.errorlist li{
+    color: #ffffff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    list-style-type: none;
+    display: block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.428571429;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+}
 
 input[type="text"],
 input[type="password"] {
     font-size: 16px;
     height: auto;
     display: inline-block;
+    margin-top:-15px;
+}
+
+select {
+    font-size: 16px;
+    height: auto;
+    display: inline-block;
+    margin-top:-15px;
 }
