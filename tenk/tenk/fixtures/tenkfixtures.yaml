@@ -1,0 +1,117 @@
+#
+# Data Fixtures
+#
+
+#Divisions
+
+- model: tenk.division
+  pk: 1
+  fields:
+    name: None
+    shortname: NONE
+- model: tenk.division
+  pk: 2
+  fields:
+    name: Corporate
+    shortname: CORP
+- model: tenk.division
+  pk: 3
+  fields:
+    name: Female Open
+    shortname: FOPN
+- model: tenk.division
+  pk: 4
+  fields:
+    name: Youth
+    shortname: YTH
+- model: tenk.division
+  pk: 5
+  fields:
+    name: Couples Half
+    shortname: HALF
+- model: tenk.division
+  pk: 6
+  fields:
+    name: Open
+    shortname: OPEN
+
+#Events
+- model: tenk.event
+  pk: 1
+  fields:
+    name: Ten K Run
+    shortname: 10K
+- model: tenk.event
+  pk: 2
+  fields:
+    name: Double Header
+    shortname: DOUBLE
+- model: tenk.event
+  pk: 3
+  fields:
+    name: Five K Run/Walk
+    shortname: 5K
+- model: tenk.event
+  pk: 4
+  fields:
+    name: Wheelchair Ten K
+    shortname: WHEELCHAIR
+- model: tenk.event
+  pk: 5
+  fields:
+    name: Half Marathon
+    shortname: HALF
+
+#Registration Types
+- model: tenk.registration
+  pk: 1
+  fields:
+    name: Instant
+    shortname: IN
+- model: tenk.registration
+  pk: 2
+  fields:
+    name: Mail Back
+    shortname: MB
+- model: tenk.registration
+  pk: 3
+  fields:
+    name: Pickup
+    shortname: PP
+
+#Shirt Sizes
+- model: tenk.Size
+  pk: 1
+  fields:
+    name: Large
+    shortname: L
+- model: tenk.Size
+  pk: 2
+  fields:
+    name: Medium
+    shortname: M
+- model: tenk.Size
+  pk: 3
+  fields:
+    name: Small
+    shortname: S
+- model: tenk.Size
+  pk: 4
+  fields:
+    name: Extra Large
+    shortname: XL
+- model: tenk.Size
+  pk: 5
+  fields:
+    name: 2 Extra Large
+    shortname: 2XL
+- model: tenk.Size
+  pk: 6
+  fields:
+    name: Youth Medium
+    shortname: YM
+- model: tenk.Size
+  pk: 7
+  fields:
+    name: Unknown
+    shortname: UK
