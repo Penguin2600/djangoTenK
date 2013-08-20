@@ -76,7 +76,7 @@ class Participant(models.Model):
     timestamp = models.DateTimeField()
 
     def __unicode__(self):
-        return self.lastname+", "+self.firstname
+        return self.last_name+", "+self.first_name
 
 
 class ParticipantForm(ModelForm):
