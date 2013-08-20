@@ -56,9 +56,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
+MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, 'media'))
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
+STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, 'static'))
 STATIC_URL = '/static/'
 
 # Additional locations of static files
@@ -115,7 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'tenk',
+    'tenk_dashboard',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -149,7 +149,7 @@ LOGGING = {
 
 # debug_toolbar settings
 if DEBUG:
-    INTERNAL_IPS = ('127.0.0.1',)
+    INTERNAL_IPS = ('127.0.0.1','192.168.1.2','10.10.10.101','10.10.10.1')
     MIDDLEWARE_CLASSES += (
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     )

@@ -5,11 +5,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'tenk.views.home', name='home'),
-    # url(r'^tenk/', include('tenk.foo.urls')),
+    url(r'^tenk/', include('tenk_dashboard.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-
 )
