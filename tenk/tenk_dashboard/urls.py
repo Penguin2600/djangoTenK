@@ -4,4 +4,6 @@ from tenk_dashboard import views
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^(?P<participant_id>\d+)/$', views.update, name='update'),
+    url(r'^stats/$', views.stats, name='stats'),
+
 )
