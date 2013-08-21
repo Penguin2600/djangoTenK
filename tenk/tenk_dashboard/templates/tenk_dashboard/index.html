@@ -5,7 +5,7 @@
 
 {% block content %}
 
-        <form id="createform" action="{% url 'create' %}" method="post" enctype="multipart/form-data" class="form-input">
+        <form id="createform" action="{% url 'index' %}" method="post" enctype="multipart/form-data" class="form-input">
             {% csrf_token %}
             {% for field in form %}
                 {{ field.errors }}<br>

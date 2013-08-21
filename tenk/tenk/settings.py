@@ -4,6 +4,8 @@ import sys
 # Django settings for tenk project.
 
 DEBUG = True
+DEBUG_TOOLBAR=True
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -146,7 +148,7 @@ LOGGING = {
 }
 
 # debug_toolbar settings
-if DEBUG:
+if DEBUG_TOOLBAR:
     INTERNAL_IPS = ('127.0.0.1','192.168.1.2','10.10.10.101','10.10.10.1')
     MIDDLEWARE_CLASSES += (
         'debug_toolbar.middleware.DebugToolbarMiddleware',

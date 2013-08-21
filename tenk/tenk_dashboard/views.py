@@ -6,19 +6,9 @@ from django.conf import settings
 from django.db.models import Max
 from django.utils import timezone
 
-def index(request, context=None):
+def index(request):
     template = 'tenk_dashboard/index.html'
-    import pdb; pdb.set_trace()
-    if context:
-        return render(request, template, context)
-    else:
-        nextbib=get_next_bib()
-        form = ParticipantForm(initial={'bib_number': nextbib})
-        context = {'form': form}
-        return render(request, template, context)
 
-def create(request):
-    template = 'tenk_dashboard/index.html'
     if request.method == 'POST':
         posted_form = ParticipantForm(request.POST)
 
@@ -30,19 +20,24 @@ def create(request):
             #Go on to the next entry, prepopulate with last entry's data
 
             nextbib=get_next_bib()
-            new_form = ParticipantForm(initial={'bib_number': nextbib,
-                                                'registration_type': posted_form.cleaned_data['registration_type'].id,
-                                                'division': posted_form.cleaned_data['division'].id,
-                                                'event': posted_form.cleaned_data['event'].id,
-                                                })
+            new_form = ParticipantForm(
+                initial={'bib_number': nextbib,
+                         'registration_type': new_participant.registration_type.id,
+                         'division': new_participant.division.id,
+                         'event': new_participant.event.id,
+                         'age': 25,
+                        })
             context = {'form': new_form}
-            return redirect('tenk_dashboard.views.index', context=context)
+            return render(request, template, context)
         else:
             #There were errors, return the form with them.
             context = {'form': posted_form}
-            return redirect('tenk_dashboard.views.index', context=context)
-
-    return redirect('index')
+            return render(request, template, context)
+    else:
+        nextbib=get_next_bib()
+        form = ParticipantForm(initial={'bib_number': nextbib})
+        context = {'form': form}
+        return render(request, template, context)
 
 def update(request, participanlt_id):
     template = 'tenk_dashboard/index.html'
@@ -50,7 +45,7 @@ def update(request, participanlt_id):
     if request.method == 'POST':
         form = ParticipantForm(request.POST)
         if form.is_valid():
-                return render(request, template, context)
+            return render(request, template, context)
         else:
             return render(request, template, context)
     else:
@@ -64,6 +59,9 @@ def update(request, participanlt_id):
 def stats(request):
     template = 'tenk_dashboard/stats.html'
     allparticipants = Participant.objects.all()
+
+    #count participants
+    participant_count={'Total participants ': Participant.objects.count()}
 
     #count genders
     gender_count=defaultdict(int)
@@ -83,11 +81,9 @@ def stats(request):
             if participant.age > age_ranges[i] and participant.age <= age_ranges[i+1]:
                 age_count[str(age_ranges[i])+"-"+str(age_ranges[i+1])] += 1
 
-    context = {'total_participants ': Participant.objects.count(),
-               'gender_count': gender_count,
-               'event_count': event_count,
-               'age_count': age_count,
-               }
+    stats = participant_count.items() + gender_count.items() + event_count.items() + age_count.items()
+
+    context = {'stats': stats}
     return render(request, template, context)
 
 def get_next_bib():

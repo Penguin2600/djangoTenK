@@ -113,6 +113,28 @@ input[type="password"] {
     margin-top:-15px;
 }
 
+input[type="text"].error {
+    font-weight: bold;
+    background: #d9534f;
+    border-color: #d43f3a;
+}
+
+select.error {
+    font-weight: bold;
+    background: #d9534f;
+    border-color: #d43f3a;
+}
+
+label.error {
+visibility: hidden;
+height: 0;
+margin: 0;
+padding: 0;
+border: 0;
+width: 0;
+line-height: 0;
+}
+
 select {
     font-size: 16px;
     height: auto;
