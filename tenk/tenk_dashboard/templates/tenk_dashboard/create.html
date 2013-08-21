@@ -1,14 +1,13 @@
-
 {% extends "base.html" %}
 
 {% block header %}Participant Entry Form{% endblock %}
 
 {% block content %}
 
-        <form id="createform" action="{% url 'index' %}" method="post" enctype="multipart/form-data" class="form-input">
+        <form id="createform" action="{% url 'create' %}" method="post" enctype="multipart/form-data" class="form-input">
             {% csrf_token %}
             {% for field in form %}
-                {{ field.errors }}<br>
+                {{ field.errors }}<br/>
                 {{ field.label_tag }} {{ field }}<br/>
             {% endfor %}
             <input type="submit" value="Submit" class="btn btn-primary btn-large submitbtn">

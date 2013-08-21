@@ -21,11 +21,9 @@ jQuery.validator.addMethod("bibnumber", function(value) {
     var isSuccess = false;
 
     $.ajax({
-        url : '/insert/checkbib',
+        url : '/tenk/checkbib/'+value,
         async : false,
-        data : {
-            bib : value
-        },
+        data : {},
         success : function(output) {
             isSuccess = output === "false" ? true : false;
         }
@@ -50,7 +48,7 @@ $(document).ready(function() {
             bib_number : {
                 required : true,
                 digits : true,
-                //bibnumber : true
+                bibnumber : true
             },
             first_name : "required",
             last_name : "required",

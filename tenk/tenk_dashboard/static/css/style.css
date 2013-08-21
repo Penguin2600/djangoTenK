@@ -15,6 +15,30 @@ body {
     margin: 0 auto -60px;
 }
 
+#header {
+    background-color: #1B1B1B;
+    height:60px;
+    background-image: linear-gradient(to bottom, #111, #444);
+    background-repeat: repeat-x;
+    border-color: #252525;
+}
+
+.page-header{
+    color: #FFF;
+    float:left;
+    font-size: 24px;
+    margin-left:50px;
+    line-height: 55px;
+}
+
+.headercontent {
+    color: #FFF;
+    float:right;
+    font-size: 16px;
+    margin-right:50px;
+    line-height: 98px;
+}
+
 /* Set the fixed height of the footer here */
 #push,
 #footer {
@@ -59,9 +83,6 @@ body {
     box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
 
-h1{
-    margin-bottom: 10px;
-}
 
 label {
     width: 200px;

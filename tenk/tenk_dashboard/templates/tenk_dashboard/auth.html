@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block header %}Login{% endblock %}
+
+{% block content %}
+
+	{% if form.errors %}
+		<p>Your username and password didn't match. Please try again.</p>
+	{% endif %}
+
+	<form id="createform" method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-input">
+		{% csrf_token %}
+
+		<br/><br/>
+		
+		{{ form.username.label_tag }}{{ form.username }}<br/><br/>
+
+		{{ form.password.label_tag }}{{ form.password }}<br/><br/>
+
+		<input type="submit" value="Login" class="btn btn-primary btn-large submitbtn">
+		<input type="hidden" name="next" value="{{ next }}" />
+	</form>
+
+{% endblock %}

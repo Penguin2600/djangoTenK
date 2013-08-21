@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
-from tenk_dashboard.models import *
-from tenk_dashboard.models import ParticipantForm
-from collections import defaultdict
+from django.http import HttpResponse
+from django.utils import timezone
 from django.conf import settings
 from django.db.models import Max
-from django.utils import timezone
 
-def index(request):
-    template = 'tenk_dashboard/index.html'
+from collections import defaultdict
+from tenk_dashboard.models import *
+
+from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth import logout
+import csv
+import os
+
+@login_required
+def create_view(request):
+    template = 'tenk_dashboard/create.html'
 
     if request.method == 'POST':
         posted_form = ParticipantForm(request.POST)
@@ -38,9 +45,9 @@ def index(request):
         form = ParticipantForm(initial={'bib_number': nextbib})
         context = {'form': form}
         return render(request, template, context)
-
-def update(request, participanlt_id):
-    template = 'tenk_dashboard/index.html'
+@login_required
+def update_view(request, participanlt_id):
+    template = 'tenk_dashboard/create.html'
 
     if request.method == 'POST':
         form = ParticipantForm(request.POST)
@@ -55,8 +62,8 @@ def update(request, participanlt_id):
 
     return render(request, template, context)
 
-
-def stats(request):
+@login_required
+def stats_view(request):
     template = 'tenk_dashboard/stats.html'
     allparticipants = Participant.objects.all()
 
@@ -86,9 +93,76 @@ def stats(request):
     context = {'stats': stats}
     return render(request, template, context)
 
+@login_required
+def import_view(request):
+    template = 'tenk_dashboard/css.html'
+    # Handle file upload
+    if request.method == 'POST':
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = CSVFile(csvfile = request.FILES['csvfile'], 
+                             starting_bib_number=request.POST['starting_bib_number'],
+                             ending_bib_number=0,
+                             total_imports=0,
+                             )
+
+            newdoc.save()
+
+            csv_path=os.path.join(settings.MEDIA_ROOT , str(newdoc.csvfile))
+            reader = csv.DictReader(open(csv_path))
+            bib_number=int(newdoc.starting_bib_number)
+            import pdb; pdb.set_trace()
+            for row in reader:
+                #Prep the row for our needs
+                
+
+                new_participant=Participant(activeid=row['ACTIVEUSERID'], 
+                                            bib_number=bib_number,
+                                            first_name=row['FIRSTNAME'],
+                                            last_name=row['LASTNAME'],
+                                            address_1=row['ADDRESS1'],
+                                            city=row['CITY'],
+                                            state=row['STATE'],
+                                            zipcode=row['ZIP'],
+                                            email=row['EMAIL'],
+                                            age=row['AGE'],
+                                            team=row['TEAM']+row['5KTEAM'],
+                                            gender=Gender.objects.get(shortname=row['GENDER']),
+                                            shirt_size=Size.objects.get(shortname=row['TSHIRT']),
+                                            event=Event.objects.get(shortname=row['CATEGORY']),
+                                            division=Division.objects.get(shortname=row['DIVISION']),
+                                            regtype=Registration.objects.get(shortname=row['TEGTYPE']),
+                                            )
+                new_participant.save()
+                print "yay"
+                bib_number+=1
+
+            ending_bib_number=bib_number-int(newdoc.starting_bib_number)
+            return redirect('csv_import')
+    else:
+        form = CSVForm() # A empty, unbound form
+
+    documents = CSVFile.objects.all()
+    return render(request, template,{'documents': documents, 'form': form},
+    )
+
+def checkbib_view(request, bib_number):
+    try:
+        bib=Participant.objects.get(bib_number=bib_number)
+        result="true"
+    except:
+        result="false"
+    return HttpResponse(result)
+
 def get_next_bib():
     try:
         next_bib=Participant.objects.all().aggregate(Max('bib_number'))['bib_number__max']+1
     except:
         next_bib=settings.DEFAULT_BIB
     return next_bib
+
+def logout_view(request):
+        #log user out and redirect to login page.
+        template = 'tenk_dashboard/auth.html'
+        logout(request)
+        return redirect('login')

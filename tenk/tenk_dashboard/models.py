@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+from django import forms
 
 class IntegerRangeField(models.IntegerField):
     def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
@@ -78,7 +79,6 @@ class Participant(models.Model):
     def __unicode__(self):
         return self.last_name+", "+self.first_name
 
-
 class ParticipantForm(ModelForm):
     class Meta:
         model = Participant
@@ -87,3 +87,14 @@ class ParticipantForm(ModelForm):
                   'address_2','zipcode','city','state','email','age',
                   'gender', 'shirt_size','event','team_name', 'division',
                   'registration_type')
+
+class CSVFile(models.Model):
+    csvfile = models.FileField(upload_to='csvfiles')
+    starting_bib_number = models.IntegerField(max_length=10)
+    ending_bib_number = models.IntegerField(max_length=10)
+    total_imports = models.IntegerField(max_length=10)
+
+class CSVForm(ModelForm):
+    class Meta:
+        model = CSVFile
+        fields = ('starting_bib_number','csvfile')

@@ -5,13 +5,14 @@ import sys
 
 DEBUG = True
 DEBUG_TOOLBAR=True
-
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Charles V Bock', 'charles@charlesbock.com'),
 )
 
+LOGIN_URL = '/tenk/auth/'
+LOGIN_REDIRECT_URL = '/tenk/create/'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 if ROOT_PATH not in sys.path:
@@ -22,7 +23,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',                                     # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.abspath(os.path.join(ROOT_PATH, '..', 'TenkData.sql')),     # Or path to database file if using sqlite3.
+        'NAME': os.path.abspath(os.path.join(ROOT_PATH, '..', 'db', 'TenkData.sql')),     # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -58,7 +59,7 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, 'media'))
+MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, 'static'))
 STATIC_URL = '/static/'
@@ -163,7 +164,7 @@ if DEBUG_TOOLBAR:
         'debug_toolbar.panels.timer.TimerDebugPanel',
         'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
         'debug_toolbar.panels.headers.HeaderDebugPanel',
-        'debug_toolbar.panels.profiling.ProfilingDebugPanel',
+        #'debug_toolbar.panels.profiling.ProfilingDebugPanel',
         'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
         'debug_toolbar.panels.sql.SQLDebugPanel',
         'debug_toolbar.panels.template.TemplateDebugPanel',

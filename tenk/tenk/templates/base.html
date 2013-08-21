@@ -5,20 +5,27 @@
     <title>{% block title %}Ten K Data Entry{% endblock %}</title>
 
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link href="/static/style.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/style.css" rel="stylesheet">
 
 </head>
 
 <body>
 
-    <link rel="stylesheet" type="text/css" href="mysite-styles.css">
-    <div id="wrap">
-        <div class="container">
-
-            <div class="page-header">
-                <h1>{% block header %}Ten K Data Entry{% endblock %}</h1>
-            </div>
+    <div id="header">
+        <div class="page-header">
+            {% block header %}Ten K Data Entry{% endblock %}
         </div>
+        <div class="headercontent">
+            {% if user.is_authenticated %}
+                <a href={% url 'logout' %}>logout</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="wrap">
+
+    <div class="container">
+    </div>
 
         {% block content %}{% endblock %}
 
@@ -27,7 +34,7 @@
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
         <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
-        <script type="text/javascript" src="/static/tenk.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}js/tenk.js"></script>
 
     </div>
     <div id="push"></div>
