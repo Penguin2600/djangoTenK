@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block header %}Export CSV{% endblock %}
+
+{% block content %}
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url 'csv_export' %}" method="post" enctype="multipart/form-data" class="form-input">
+            {% csrf_token %}
+            {% for field in form %}<br>
+                {{ field.label_tag }}
+                {{ field }}<br>
+            {% endfor %}
+            <input type="submit" value="Export" class="btn btn-primary btn-large submitbtn">
+        </form>
+
+{% endblock %}

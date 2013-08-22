@@ -1,6 +1,4 @@
 from django.db import models
-from django.forms import ModelForm
-from django import forms
 
 class IntegerRangeField(models.IntegerField):
     def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
@@ -69,7 +67,7 @@ class Participant(models.Model):
     address_1 = models.CharField(max_length=255, blank=True, null=True)
     address_2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
-    state = models.CharField(max_length=2)
+    state = models.CharField(max_length=2, blank=True, null=True)
     zipcode = models.IntegerField(max_length=5, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     age = IntegerRangeField(max_length=3, min_value=1, max_value=99)
@@ -79,22 +77,15 @@ class Participant(models.Model):
     def __unicode__(self):
         return self.last_name+", "+self.first_name
 
-class ParticipantForm(ModelForm):
-    class Meta:
-        model = Participant
-        #Render order of fields
-        fields = ('bib_number', 'last_name', 'first_name','address_1',
-                  'address_2','zipcode','city','state','email','age',
-                  'gender', 'shirt_size','event','team_name', 'division',
-                  'registration_type')
-
 class CSVFile(models.Model):
     csvfile = models.FileField(upload_to='csvfiles')
     starting_bib_number = models.IntegerField(max_length=10)
     ending_bib_number = models.IntegerField(max_length=10)
     total_imports = models.IntegerField(max_length=10)
 
-class CSVForm(ModelForm):
-    class Meta:
-        model = CSVFile
-        fields = ('starting_bib_number','csvfile')
+# This sucks, build dynamically later.
+class ExportSet(models.Model):
+    name = models.CharField(max_length=255)
+    field_names = models.CharField(max_length=65535)
+    def __unicode__(self):
+        return self.name

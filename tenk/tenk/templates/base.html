@@ -17,6 +17,8 @@
         </div>
         <div class="headercontent">
             {% if user.is_authenticated %}
+                <a href={% url 'csv_import' %}>Import</a>
+                <a href={% url 'csv_export' %}>Export</a>
                 <a href={% url 'logout' %}>logout</a>
             {% endif %}
         </div>

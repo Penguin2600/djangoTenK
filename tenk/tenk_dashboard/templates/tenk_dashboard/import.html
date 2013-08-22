@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block header %}Import CSV{% endblock %}
+
+{% block content %}
+
+        <form action="{% url 'csv_import' %}" method="post" enctype="multipart/form-data" class="form-input">
+            {% csrf_token %}
+            {% for field in form %}
+                {{ field.errors }}<br/>
+                {{ field.label_tag }}
+                {{ field }}<br/>
+            {% endfor %}
+            <input type="submit" value="Import" class="btn btn-primary btn-large submitbtn">
+        </form>
+
+ <!-- List of uploaded documents -->
+    {% if imported_files %}
+        <table class="table table-striped table-bordered table-condensed">
+        <tr><th>File Name</th><th>Starting Bib</th><th>Ending Bib</th><th>Total Imported</th></tr>
+        {% for file in imported_files %}
+        <tr>
+            <td><a href="{{ file.csvfile.url }}">{{ file.csvfile.name }}</a></td>
+            <td>{{ file.starting_bib_number }}</td>
+            <td>{{ file.ending_bib_number }}</td>
+            <td>{{ file.total_imports }}</td>
+
+        </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}
