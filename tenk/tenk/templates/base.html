@@ -17,6 +17,10 @@
         </div>
         <div class="headercontent">
             {% if user.is_authenticated %}
+                <form id="searchform" action="{% url 'search' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ search_form.search }}
+                </form>
                 <a href={% url 'csv_import' %}>Import</a>
                 <a href={% url 'csv_export' %}>Export</a>
                 <a href={% url 'logout' %}>logout</a>
@@ -44,7 +48,7 @@
 
 <div id="footer">
     <div class="container">
-        <p class="muted credit">© 2099 Charles Bock</p>
+        <p class="muted credit">© 2022 Charles Bock</p>
     </div>
 </div>
 </body>

@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone
 from django.conf import settings
+from django.db.models import Q
 
 from collections import defaultdict
 
@@ -33,23 +34,23 @@ def create_view(request):
                 initial={'bib_number': nextbib,
                          'registration_type': new_participant.registration_type.id,
                          'division': new_participant.division.id,
-                         'event': new_participant.event.id,
+                         #'event': new_participant.event.id,
                         })
-            context = {'form': new_form}
+            context = {'form': new_form, 'search_form': SearchParticipantForm()}
             return render(request, template, context)
         else:
             #There were errors, return the form with them.
-            context = {'form': posted_form}
+            context = {'form': posted_form, 'search_form': SearchParticipantForm()}
             return render(request, template, context)
     else:
         nextbib=get_next_bib()
         form = ParticipantForm(initial={'bib_number': nextbib})
-        context = {'form': form}
+        context = {'form': form, 'search_form': SearchParticipantForm()}
         return render(request, template, context)
 
 @login_required
 def quick_create_view(request):
-    template = 'tenk_dashboard/create.html'
+    template = 'tenk_dashboard/quick.html'
 
     if request.method == 'POST':
         posted_form = QuickParticipantForm(request.POST)
@@ -67,7 +68,7 @@ def quick_create_view(request):
             new_form = QuickParticipantForm(
                 initial={'bib_number': nextbib,
                          'division': new_participant.division.id,
-                         'event': new_participant.event.id,
+                         #'event': new_participant.event.id,
                         })
             context = {'form': new_form}
             return render(request, template, context)
@@ -82,19 +83,36 @@ def quick_create_view(request):
         return render(request, template, context)
 
 @login_required
-def update_view(request, participanlt_id):
-    template = 'tenk_dashboard/create.html'
+def search_view(request):
+    template = 'tenk_dashboard/search.html'
+    if request.method == 'POST':
+        results = Participant.objects.all()
+        search = request.POST.get('search', None)
+        if search:
+            results = results.filter(Q(first_name__contains=search)|Q(last_name__contains=search)|Q(bib_number__contains=search)|Q(zipcode__contains=search))
+        return render(request, template, {'search_form': SearchParticipantForm(request.POST), 'results': results})
+
+@login_required
+def update_view(request, participant_id=None):
+    template = 'tenk_dashboard/update.html'
+    if participant_id==None:
+        participant_id=request.POST['participant_id']
+    participant = Participant.objects.get(id=participant_id)
 
     if request.method == 'POST':
-        form = ParticipantForm(request.POST)
-        if form.is_valid():
+        posted_form = ParticipantForm(request.POST, instance=participant)
+
+        if posted_form.is_valid():
+            posted_form.save()
+            context = {'form': posted_form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
             return render(request, template, context)
         else:
+            #There were errors, return the form with them.
+            context = {'form': posted_form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
             return render(request, template, context)
     else:
-        participant = Participant.objects.get(pk=participant_id)
         form = ParticipantForm(instance=participant) # A empty, unbound form
-    context = {'form': form}
+        context = {'form': form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
 
     return render(request, template, context)
 
@@ -151,7 +169,7 @@ def csv_import_view(request):
         form = ImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = CSVFile(
-                csvfile = request.FILES['csvfile'], 
+                csvfile = request.FILES['csvfile'],
                 starting_bib_number=request.POST['starting_bib_number'],
                 ending_bib_number=0,
                 total_imports=0,)
@@ -163,7 +181,7 @@ def csv_import_view(request):
             bib_number = int(csv_file.starting_bib_number)
             new_participant_list = []
 
-            #generate a list of new participants to be added, 
+            #generate a list of new participants to be added,
             #only complete the add if everything is valid
 
             for row in csv_reader:
@@ -178,7 +196,7 @@ def csv_import_view(request):
             #Update csv object and save.
             ending_bib_number = bib_number-1
             total_imports = bib_number - int(csv_file.starting_bib_number)
-            csv_file.ending_bib_number = ending_bib_number 
+            csv_file.ending_bib_number = ending_bib_number
             csv_file.total_imports = total_imports
             csv_file.save()
 

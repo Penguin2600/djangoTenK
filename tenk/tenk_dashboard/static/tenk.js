@@ -21,9 +21,11 @@ jQuery.validator.addMethod("bibnumber", function(value) {
     var isSuccess = false;
 
     $.ajax({
-        url : '/tenk/checkbib/'+value,
+        url : '/insert/checkbib',
         async : false,
-        data : {},
+        data : {
+            bib : value
+        },
         success : function(output) {
             isSuccess = output === "false" ? true : false;
         }
@@ -48,7 +50,7 @@ $(document).ready(function() {
             bib_number : {
                 required : true,
                 digits : true,
-                bibnumber : true
+                //bibnumber : true
             },
             first_name : "required",
             last_name : "required",
@@ -80,12 +82,12 @@ $(document).ready(function() {
         onkeyup : false,
         onclick : false,
         rules : {
-            bib_number : {
+            bibnumber : {
                 required : true,
-                digits : true
+                digits : true,
             },
-            first_name : "required",
-            last_name : "required",
+            firstname : "required",
+            lastname : "required",
             zipcode : {
                 digits : true
             },
@@ -99,9 +101,37 @@ $(document).ready(function() {
                 email : true
             },
 
-            shirt_size : "required",
-            gender : "required",
-            registration_type : "required",
+            size : "required",
+            registration : "required",
+            event : "required",
+            division : "required"
+        },
+        submitHandler : function(form) {
+            form.submit();
+        }
+    });
+
+    $("#quickForm").validate({
+        onkeyup : false,
+        onclick : false,
+        rules : {
+            bibnumber : {
+                required : true,
+                digits : true,
+                bibnumber : true
+            },
+            firstname : "required",
+            lastname : "required",
+            age : {
+                required : true,
+                range : [1, 99],
+                digits : true
+            },
+
+            email : {
+                email : true
+            },
+
             event : "required",
             division : "required"
         },

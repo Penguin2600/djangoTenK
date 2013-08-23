@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block header %}Participant Update Form{% endblock %}
+
+{% block content %}
+
+        <form id="updateform" action="{% url 'update' %}" method="post" enctype="multipart/form-data" class="form-input">
+            {% csrf_token %}
+            <input type="hidden" name="participant_id" value="{{ participant_id }}">
+            {% for field in form %}
+                {{ field.errors }}<br/>
+                {{ field.label_tag }} {{ field }}<br/>
+            {% endfor %}
+            <input type="submit" value="Update" class="btn btn-primary btn-large submitbtn">
+        </form>
+
+{% endblock %}
