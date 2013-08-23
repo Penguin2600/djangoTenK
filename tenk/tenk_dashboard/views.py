@@ -29,7 +29,7 @@ def create_view(request):
             new_participant.save()
 
             #Go on to the next entry, prepopulate with last entry's data
-            nextbib=get_next_bib()
+            nextbib=get_next_bib(new_participant.bib_number)
             new_form = ParticipantForm(
                 initial={'bib_number': nextbib,
                          'registration_type': new_participant.registration_type.id,

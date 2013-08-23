@@ -73,9 +73,12 @@ def generate_participant(row, bib_number):
         timestamp=timezone.now())
     return new_participant
 
-def get_next_bib():
-    try:
-        next_bib=Participant.objects.all().aggregate(Max('bib_number'))['bib_number__max']+1
-    except:
-        next_bib=settings.DEFAULT_BIB
-    return next_bib
+def get_next_bib(previous_bib=None):
+    if previous_bib:
+        return previous_bib+1
+    else:
+        try:
+            next_bib=Participant.objects.all().aggregate(Max('bib_number'))['bib_number__max']+1
+        except:
+            next_bib=settings.DEFAULT_BIB
+        return next_bib

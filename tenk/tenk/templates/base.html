@@ -15,17 +15,21 @@
         <div class="page-header">
             {% block header %}Ten K Data Entry{% endblock %}
         </div>
-        <div class="headercontent">
             {% if user.is_authenticated %}
-                <form id="searchform" action="{% url 'search' %}" method="post" enctype="multipart/form-data">
+        <div class="headercontent">
+                <a class="btn" href={% url 'csv_import' %}>Import</a>
+                <a class="btn" href={% url 'csv_export' %}>Export</a>
+                <a class="btn" href={% url 'create' %}>Create</a>
+                <a class="btn" href={% url 'quick' %}>Quick</a>
+                <a class="btn btn-danger" href={% url 'logout' %}>logout</a>
+        </div>
+        <div class="searchbar">
+                <form id="searchform" class="form-search" action="{% url 'search' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ search_form.search }}
                 </form>
-                <a href={% url 'csv_import' %}>Import</a>
-                <a href={% url 'csv_export' %}>Export</a>
-                <a href={% url 'logout' %}>logout</a>
-            {% endif %}
         </div>
+            {% endif %}
     </div>
 
     <div id="wrap">

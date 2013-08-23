@@ -5,7 +5,8 @@
 {% block content %}
 
     {% if results %}
-        <table class="table table-striped table-bordered table-condensed form-input">
+    <div class="search-results">
+        <table class="table table-striped table-bordered table-condensed">
         <tr><th>Bib Number</th><th>Last Name</th><th>First Name</th><th>Age</th><th>Gender</th><th>Timestamp</th></tr>
         {% for result in results %}
         <tr>
@@ -18,6 +19,7 @@
         </tr>
         {% endfor %}
         </table>
+    </div>
     {% endif %}
 
 {% endblock %}
