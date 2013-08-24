@@ -1,171 +1,177 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from django.conf import settings
 from django.db.models import Q
-
 from collections import defaultdict
-
 from tenk_dashboard.helpers import *
 from tenk_dashboard.models import *
 from tenk_dashboard.forms import *
-
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 import csv
 import os
 
-@login_required
-def create_view(request):
-    template = 'tenk_dashboard/create.html'
+from django.views.generic.base import TemplateView
+from django.utils.decorators import method_decorator
 
-    if request.method == 'POST':
+class TenkView(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = {'search_form': SearchParticipantForm()}
+        for k,v in kwargs.iteritems():
+            if k not in context:
+                context[k]=v
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return redirect('index')
+
+    def post(self, request, *args, **kwargs):
+        return redirect('index')
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(TenkView, self).dispatch(*args, **kwargs)
+
+class CreateView(TenkView):
+    template_name = "tenk_dashboard/create.html"
+
+    def get(self, request, *args, **kwargs):
+        nextbib=get_next_bib()
+        form = ParticipantForm(initial={'bib_number': nextbib})
+        context=self.get_context_data(form=form)
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
         posted_form = ParticipantForm(request.POST)
 
         if posted_form.is_valid():
-            #Good data, Save and continue to next entry
             new_participant = posted_form.save(commit=False)
             new_participant.timestamp=timezone.now()
             new_participant.save()
 
-            #Go on to the next entry, prepopulate with last entry's data
             nextbib=get_next_bib(new_participant.bib_number)
             new_form = ParticipantForm(
                 initial={'bib_number': nextbib,
                          'registration_type': new_participant.registration_type.id,
                          'division': new_participant.division.id,
-                         #'event': new_participant.event.id,
                         })
-            context = {'form': new_form, 'search_form': SearchParticipantForm()}
-            return render(request, template, context)
-        else:
-            #There were errors, return the form with them.
-            context = {'form': posted_form, 'search_form': SearchParticipantForm()}
-            return render(request, template, context)
-    else:
+            context=self.get_context_data(form=new_form)
+            return render(request, self.template_name, context)
+
+        context=self.get_context_data(form=posted_form)
+        return render(request, self.template_name, context)
+
+class QuickView(TenkView):
+    template_name = "tenk_dashboard/quick.html"
+
+    def get(self, request, *args, **kwargs):
         nextbib=get_next_bib()
-        form = ParticipantForm(initial={'bib_number': nextbib})
-        context = {'form': form, 'search_form': SearchParticipantForm()}
-        return render(request, template, context)
+        form = QuickParticipantForm(initial={'bib_number': nextbib})
+        context=self.get_context_data(form=form)
+        return render(request, self.template_name, context)
 
-@login_required
-def quick_create_view(request):
-    template = 'tenk_dashboard/quick.html'
-
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
         posted_form = QuickParticipantForm(request.POST)
 
         if posted_form.is_valid():
-            #Good data, Save and continue to next entry
             new_participant = posted_form.save(commit=False)
             new_participant.timestamp=timezone.now()
-            new_participant.registration_type=Registration.objects.get(shortname="PP")
-            new_participant.shirt_size=Size.objects.get(shortname="UK")
+            new_participant.registration_type=Registration.objects.get(csv_name="PP")
+            new_participant.shirt_size=Size.objects.get(csv_name="UK")
             new_participant.save()
 
-            #Go on to the next entry, prepopulate with last entry's data
-            nextbib=get_next_bib()
+            nextbib=get_next_bib(new_participant.bib_number)
             new_form = QuickParticipantForm(
                 initial={'bib_number': nextbib,
                          'division': new_participant.division.id,
-                         #'event': new_participant.event.id,
                         })
-            context = {'form': new_form}
-            return render(request, template, context)
-        else:
-            #There were errors, return the form with them.
-            context = {'form': posted_form}
-            return render(request, template, context)
-    else:
-        nextbib=get_next_bib()
-        form = QuickParticipantForm(initial={'bib_number': nextbib})
-        context = {'form': form}
-        return render(request, template, context)
+            context=self.get_context_data(form=new_form)
+            return render(request, self.template_name, context)
 
-@login_required
-def search_view(request):
-    template = 'tenk_dashboard/search.html'
-    if request.method == 'POST':
-        results = Participant.objects.all()
+        context=self.get_context_data(form=posted_form)
+        return render(request, self.template_name, context)
+
+class SearchView(TenkView):
+    template_name = 'tenk_dashboard/search.html'
+
+    def post(self, request, *args, **kwargs):
         search = request.POST.get('search', None)
         if search:
-            results = results.filter(Q(first_name__contains=search)|Q(last_name__contains=search)|Q(bib_number__contains=search)|Q(zipcode__contains=search))
-        return render(request, template, {'search_form': SearchParticipantForm(request.POST), 'results': results})
+            results = Participant.objects.all().filter(Q(first_name__contains=search)|
+                                                       Q(last_name__contains=search)|
+                                                       Q(bib_number__contains=search)|
+                                                       Q(zipcode__contains=search))
+            if results:
+                context=self.get_context_data(results=results)
+                return render(request, self.template_name, context)
+            return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META['HTTP_REFERER'])
 
-@login_required
-def update_view(request, participant_id=None):
-    template = 'tenk_dashboard/update.html'
-    if participant_id==None:
-        participant_id=request.POST['participant_id']
-    participant = Participant.objects.get(id=participant_id)
+class UpdateView(TenkView):
+    template_name = "tenk_dashboard/update.html"
 
-    if request.method == 'POST':
+    def get(self, request, participant_id):
+        participant = Participant.objects.get(id=participant_id)
+        form = ParticipantForm(instance=participant) # A empty, unbound form
+        context=self.get_context_data(form=form, participant_id=participant.id)
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        participant = Participant.objects.get(id=request.POST['participant_id'])
         posted_form = ParticipantForm(request.POST, instance=participant)
 
         if posted_form.is_valid():
             posted_form.save()
-            context = {'form': posted_form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
-            return render(request, template, context)
-        else:
-            #There were errors, return the form with them.
-            context = {'form': posted_form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
-            return render(request, template, context)
-    else:
-        form = ParticipantForm(instance=participant) # A empty, unbound form
-        context = {'form': form, 'participant_id': participant.id, 'search_form': SearchParticipantForm()}
+            context=self.get_context_data(form=posted_form, participant_id=participant.id)
+            return render(request, self.template_name, context)
 
-    return render(request, template, context)
+        context=self.get_context_data(form=posted_form, participant_id=participant.id)
+        return render(request, self.template_name, context)
 
-@login_required
-def stats_view(request):
-    template = 'tenk_dashboard/stats.html'
-    allparticipants = Participant.objects.all()
+class StatsView(TenkView):
+    template_name = "tenk_dashboard/stats.html"
 
-    #count participants
-    participant_count={'Total participants ': Participant.objects.count()}
+    def get(self, request):
+        allparticipants = Participant.objects.all()
 
-    #count genders
-    gender_count=defaultdict(int)
-    for participant in allparticipants:
-        gender_count[participant.gender.name]+=1
+        #count participants
+        participant_count={'Total participants ': Participant.objects.count()}
 
-    #count events
-    event_count=defaultdict(int)
-    for participant in allparticipants:
-        event_count[participant.event.name]+=1
-
-    #count ages
-    age_count = defaultdict(int)
-    age_ranges = settings.AGE_RANGES
-    for i in range(0,len(age_ranges)-1):
+        #count genders
+        gender_count=defaultdict(int)
         for participant in allparticipants:
-            if participant.age > age_ranges[i] and participant.age <= age_ranges[i+1]:
-                age_count[str(age_ranges[i])+"-"+str(age_ranges[i+1])] += 1
+            gender_count[participant.gender.name]+=1
 
-    stats = participant_count.items() + gender_count.items() + event_count.items() + age_count.items()
+        #count events
+        event_count=defaultdict(int)
+        for participant in allparticipants:
+            event_count[participant.event.name]+=1
 
-    context = {'stats': stats}
-    return render(request, template, context)
+        #count ages
+        age_count = defaultdict(int)
+        age_ranges = settings.AGE_RANGES
+        for i in range(0,len(age_ranges)-1):
+            for participant in allparticipants:
+                if participant.age > age_ranges[i] and participant.age <= age_ranges[i+1]:
+                    age_count[str(age_ranges[i])+"-"+str(age_ranges[i+1])] += 1
 
-def checkbib_view(request, bib_number):
-    try:
-        bib=Participant.objects.get(bib_number=bib_number)
-        result="true"
-    except:
-        result="false"
-    return HttpResponse(result)
+        stats = participant_count.items() + gender_count.items() + event_count.items() + age_count.items()
 
-def logout_view(request):
-        #log user out and redirect to login page.
-        template = 'tenk_dashboard/auth.html'
-        logout(request)
-        return redirect('login')
+        context=self.get_context_data(stats=stats)
+        return render(request, self.template_name, context)
 
-@login_required
-def csv_import_view(request):
-    template = 'tenk_dashboard/import.html'
-    # Handle file upload
-    if request.method == 'POST':
+class ImportView(TenkView):
+    template_name = "tenk_dashboard/import.html"
+
+    def get(self, request, *args, **kwargs):
+        form = ImportForm()
+        imported_files = CSVFile.objects.all()
+        context=self.get_context_data(imported_files= imported_files, form= form)
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
         form = ImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = CSVFile(
@@ -183,7 +189,6 @@ def csv_import_view(request):
 
             #generate a list of new participants to be added,
             #only complete the add if everything is valid
-
             for row in csv_reader:
                 valid_row=validate_csv_row(row,bib_number)
                 new_participant_list.append(generate_participant(valid_row, bib_number))
@@ -199,27 +204,49 @@ def csv_import_view(request):
             csv_file.ending_bib_number = ending_bib_number
             csv_file.total_imports = total_imports
             csv_file.save()
-
             return redirect('csv_import')
-    else:
-        form = ImportForm() # A empty, unbound form
+        return redirect('csv_import')
 
-    imported_files = CSVFile.objects.all()
-    return render(request, template,{'imported_files': imported_files, 'form': form},
-    )
+class ExportView(TenkView):
+    template_name = "tenk_dashboard/export.html"
 
-
-@login_required
-def csv_export_view(request):
-    template = 'tenk_dashboard/export.html'
-    if request.method == 'POST':
-        form = ExportForm(request.POST)
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
-        writer = csv.writer(response)
-        writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-        writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
-        return response
-    else:
+    def get(self, request, *args, **kwargs):
         form = ExportForm()
-        return render(request, template, {'form': form})
+        context=self.get_context_data(form=form)
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = ExportForm(request.POST)
+        fields=ExportSet.objects.get(id=form.data['export_set']).field_names.split()
+
+        #generate csv headers
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="tenk_export_%s.csv"' % timezone.now()
+        writer = csv.writer(response)
+        #write header
+        writer.writerow(fields)
+        #write csv rows
+        participants=Participant.objects.all()
+        for participant in participants:
+            csvrow=[]
+            for field in fields:
+                value=getattr(participant, field)
+                if hasattr(value, 'csv_name'):
+                    result=getattr(value, 'csv_name')
+                else:
+                    result=getattr(participant, field)
+                csvrow.append(result)
+            writer.writerow(csvrow)
+        return response
+
+def checkbib_view(request, bib_number):
+    try:
+        bib = Participant.objects.get(bib_number=bib_number)
+        result="true"
+    except:
+        result="false"
+    return HttpResponse(result)
+
+def logout_view(request):
+        logout(request)
+        return redirect('login')

@@ -13,40 +13,50 @@ class IntegerRangeField(models.IntegerField):
 
 class Division(models.Model):
     name = models.CharField(max_length=255)
-    shortname = models.CharField(max_length=16)
+    import_name = models.CharField(max_length=16)
+    export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
+
 
     def __unicode__(self):
         return self.name
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
-    shortname = models.CharField(max_length=16)
+    import_name = models.CharField(max_length=16)
+    export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
+
 
     def __unicode__(self):
         return self.name
 
 class Registration(models.Model):
     name = models.CharField(max_length=255)
-    shortname = models.CharField(max_length=16)
+    import_name = models.CharField(max_length=255)
+    export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
+
 
     def __unicode__(self):
         return self.name
 
 class Size(models.Model):
     name = models.CharField(max_length=255)
-    shortname = models.CharField(max_length=16)
+    import_name = models.CharField(max_length=16)
+    export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
+
 
     def __unicode__(self):
         return self.name
 
 class Gender(models.Model):
     name = models.CharField(max_length=255)
-    shortname = models.CharField(max_length=16)
+    import_name = models.CharField(max_length=16)
+    export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
+
 
     def __unicode__(self):
         return self.name

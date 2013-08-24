@@ -1,5 +1,6 @@
 import os
 import sys
+from django.conf import global_settings
 
 # Django settings for tenk project.
 

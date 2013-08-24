@@ -198,7 +198,7 @@
   pk: 2
   fields:
     name: 'Mail style'
-    field_names: 'first_name last_name gender age shirt_size bib_number address1 address2 city state zipcode'
+    field_names: 'first_name last_name gender age shirt_size bib_number address_1 address_2 city state zipcode'
 
 - model: tenk_dashboard.Exportset
   pk: 3
@@ -210,4 +210,4 @@
   pk: 4
   fields:
     name: 'Everything'
-    field_names: 'activeid bib_number last_name first_name address1 address2 city state zipcode email age gender shirt_size event division team_name registration_type timestamp'
+    field_names: 'activeid bib_number last_name first_name address_1 address_2 city state zipcode email age gender shirt_size event division team_name registration_type timestamp'
