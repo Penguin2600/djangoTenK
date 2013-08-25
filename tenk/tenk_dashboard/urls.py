@@ -19,4 +19,6 @@ urlpatterns = patterns('',
     url(r'^stats/$', views.StatsView.as_view(), name='stats'),
     url(r'^search/$', views.SearchView.as_view(), name='search'),
     url(r'^checkbib/(?P<bib_number>\d+)/$', views.checkbib_view, name='checkbib'),
+    url(r'^checksearch/(?P<query>\w+)/$', views.checksearch_view, name='checksearch'),
+
 )

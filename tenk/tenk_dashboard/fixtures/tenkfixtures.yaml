@@ -9,42 +9,48 @@
   pk: 1
   fields:
     name: None
-    shortname: NONE
+    import_name: NONE
+    export_name: ''
     order: 10
 
 - model: tenk_dashboard.division
   pk: 2
   fields:
     name: Corporate
-    shortname: CORP
+    import_name: CORP
+    export_name: CORP
     order: 20
 
 - model: tenk_dashboard.division
   pk: 3
   fields:
     name: Female Open
-    shortname: FOPN
+    import_name: FOPN
+    export_name: FOPN
     order: 30
 
 - model: tenk_dashboard.division
   pk: 4
   fields:
     name: Youth
-    shortname: YTH
+    import_name: YTH
+    export_name: YTH
     order: 40
 
 - model: tenk_dashboard.division
   pk: 5
   fields:
     name: Couples Half
-    shortname: HALF
+    import_name: HALF
+    export_name: HALF
     order: 50
 
 - model: tenk_dashboard.division
   pk: 6
   fields:
     name: Open
-    shortname: OPEN
+    import_name: OPEN
+    export_name: OPEN
     order: 60
 
 
@@ -54,35 +60,40 @@
   pk: 1
   fields:
     name: Ten K Run
-    shortname: 10K
+    import_name: 10K
+    export_name: 10K
     order: 10
 
 - model: tenk_dashboard.event
   pk: 2
   fields:
     name: Double Header
-    shortname: DOUBLE
+    import_name: DOUBLE
+    export_name: DOUBLE
     order: 20
 
 - model: tenk_dashboard.event
   pk: 3
   fields:
     name: Five K Run/Walk
-    shortname: 5K
+    import_name: 5K
+    export_name: 5K
     order: 30
 
 - model: tenk_dashboard.event
   pk: 4
   fields:
     name: Wheelchair Ten K
-    shortname: WHEELCHAIR
+    import_name: WHEELCHAIR
+    export_name: WHEELCHAIR
     order: 40
 
 - model: tenk_dashboard.event
   pk: 5
   fields:
     name: Half Marathon
-    shortname: HALF
+    import_name: HALF
+    export_name: HALF
     order: 50
 
 
@@ -92,21 +103,24 @@
   pk: 1
   fields:
     name: Instant
-    shortname: IN
+    import_name: IN
+    export_name: IN
     order: 10
 
 - model: tenk_dashboard.registration
   pk: 2
   fields:
     name: Mail Back
-    shortname: MB
+    import_name: MB
+    export_name: MB
     order: 20
 
 - model: tenk_dashboard.registration
   pk: 3
   fields:
     name: Pickup
-    shortname: PP
+    import_name: PP
+    export_name: PP
     order: 30
 
 
@@ -116,49 +130,56 @@
   pk: 1
   fields:
     name: Large
-    shortname: L
+    import_name: L
+    export_name: L
     order: 10
 
 - model: tenk_dashboard.Size
   pk: 2
   fields:
     name: Medium
-    shortname: M
+    import_name: M
+    export_name: M
     order: 20
 
 - model: tenk_dashboard.Size
   pk: 3
   fields:
     name: Small
-    shortname: S
+    import_name: S
+    export_name: S
     order: 30
 
 - model: tenk_dashboard.Size
   pk: 4
   fields:
     name: Extra Large
-    shortname: XL
+    import_name: XL
+    export_name: XL
     order: 40
 
 - model: tenk_dashboard.Size
   pk: 5
   fields:
     name: 2 Extra Large
-    shortname: 2XL
+    import_name: 2XL
+    export_name: 2XL
     order: 50
 
 - model: tenk_dashboard.Size
   pk: 6
   fields:
     name: Youth Medium
-    shortname: YM
+    import_name: YM
+    export_name: YM
     order: 60
 
 - model: tenk_dashboard.Size
   pk: 7
   fields:
     name: Unknown
-    shortname: UK
+    import_name: UK
+    export_name: UK
     order: 70
 
 
@@ -168,21 +189,24 @@
   pk: 1
   fields:
     name: Male
-    shortname: M
+    import_name: M
+    export_name: M
     order: 10
 
 - model: tenk_dashboard.Gender
   pk: 2
   fields:
     name: Female
-    shortname: F
+    import_name: F
+    export_name: F
     order: 20
 
 - model: tenk_dashboard.Gender
   pk: 3
   fields:
     name: Not Available
-    shortname: NA
+    import_name: NA
+    export_name: NA
     order: 30
 
 

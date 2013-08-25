@@ -38,8 +38,10 @@ class CreateView(TenkView):
     template_name = "tenk_dashboard/create.html"
 
     def get(self, request, *args, **kwargs):
-        nextbib=get_next_bib()
-        form = ParticipantForm(initial={'bib_number': nextbib})
+        form = ParticipantForm(
+            initial={'registration_type': Registration.objects.get(name='Instant').id,
+                     'division': Division.objects.get(name='None').id,
+                    })
         context=self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
@@ -51,7 +53,7 @@ class CreateView(TenkView):
             new_participant.timestamp=timezone.now()
             new_participant.save()
 
-            nextbib=get_next_bib(new_participant.bib_number)
+            nextbib=new_participant.bib_number+1
             new_form = ParticipantForm(
                 initial={'bib_number': nextbib,
                          'registration_type': new_participant.registration_type.id,
@@ -67,8 +69,10 @@ class QuickView(TenkView):
     template_name = "tenk_dashboard/quick.html"
 
     def get(self, request, *args, **kwargs):
-        nextbib=get_next_bib()
-        form = QuickParticipantForm(initial={'bib_number': nextbib})
+        form = QuickParticipantForm(
+            initial={'registration_type': Registration.objects.get(name='Instant').id,
+                     'division': Division.objects.get(name='None').id,
+                    })
         context=self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
@@ -78,11 +82,11 @@ class QuickView(TenkView):
         if posted_form.is_valid():
             new_participant = posted_form.save(commit=False)
             new_participant.timestamp=timezone.now()
-            new_participant.registration_type=Registration.objects.get(csv_name="PP")
-            new_participant.shirt_size=Size.objects.get(csv_name="UK")
+            new_participant.registration_type=Registration.objects.get(name="Instant")
+            new_participant.shirt_size=Size.objects.get(name="Unknown")
             new_participant.save()
 
-            nextbib=get_next_bib(new_participant.bib_number)
+            nextbib=new_participant.bib_number+1
             new_form = QuickParticipantForm(
                 initial={'bib_number': nextbib,
                          'division': new_participant.division.id,
@@ -155,9 +159,9 @@ class StatsView(TenkView):
         for i in range(0,len(age_ranges)-1):
             for participant in allparticipants:
                 if participant.age > age_ranges[i] and participant.age <= age_ranges[i+1]:
-                    age_count[str(age_ranges[i])+"-"+str(age_ranges[i+1])] += 1
+                    age_count[str(age_ranges[i]+1)+"-"+str(age_ranges[i+1])] += 1
 
-        stats = participant_count.items() + gender_count.items() + event_count.items() + age_count.items()
+        stats = participant_count.items() + gender_count.items() + event_count.items() + sorted(age_count.items())
 
         context=self.get_context_data(stats=stats)
         return render(request, self.template_name, context)
@@ -211,33 +215,42 @@ class ExportView(TenkView):
     template_name = "tenk_dashboard/export.html"
 
     def get(self, request, *args, **kwargs):
-        form = ExportForm()
+        try:
+            ending_bib=Participant.objects.all().aggregate(Max('bib_number'))['bib_number__max']
+        except:
+            ending_bib=0
+        form = ExportForm(
+            initial={'starting_bib': 0,
+                'ending_bib': ending_bib,
+            })
+
         context=self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         form = ExportForm(request.POST)
-        fields=ExportSet.objects.get(id=form.data['export_set']).field_names.split()
-
-        #generate csv headers
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="tenk_export_%s.csv"' % timezone.now()
-        writer = csv.writer(response)
-        #write header
-        writer.writerow(fields)
-        #write csv rows
-        participants=Participant.objects.all()
-        for participant in participants:
-            csvrow=[]
-            for field in fields:
-                value=getattr(participant, field)
-                if hasattr(value, 'csv_name'):
-                    result=getattr(value, 'csv_name')
-                else:
-                    result=getattr(participant, field)
-                csvrow.append(result)
-            writer.writerow(csvrow)
-        return response
+        if form.is_valid():
+            fields=ExportSet.objects.get(id=form.data['export_set']).field_names.split()
+            #generate csv headers
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="tenk_export_%s.csv"' % timezone.now()
+            writer = csv.writer(response)
+            #write header
+            writer.writerow(fields)
+            #write csv rows
+            participants=Participant.objects.filter(bib_number__range=(form.data['starting_bib'], form.data['ending_bib']))
+            for participant in participants:
+                csvrow=[]
+                for field in fields:
+                    value=getattr(participant, field)
+                    if hasattr(value, 'export_name'):
+                        result=getattr(value, 'export_name')
+                    else:
+                        result=getattr(participant, field)
+                    csvrow.append(result)
+                writer.writerow(csvrow)
+            return response
+        return redirect('csv_export')
 
 def checkbib_view(request, bib_number):
     try:
@@ -250,3 +263,15 @@ def checkbib_view(request, bib_number):
 def logout_view(request):
         logout(request)
         return redirect('login')
+
+
+def checksearch_view(request, query):
+    results = Participant.objects.all().filter(Q(first_name__contains=query)|
+                                               Q(last_name__contains=query)|
+                                               Q(bib_number__contains=query)|
+                                               Q(zipcode__contains=query))
+    if results:
+        result="true"
+    else:
+        result="false"
+    return HttpResponse(result)

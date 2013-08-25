@@ -78,7 +78,7 @@ class Participant(models.Model):
     address_2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=2, blank=True, null=True)
-    zipcode = models.IntegerField(max_length=5, blank=True, null=True)
+    zipcode = models.CharField(max_length=7, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     age = IntegerRangeField(max_length=3, min_value=1, max_value=99)
     team_name = models.CharField(max_length=255, blank=True, null=True)

@@ -12,8 +12,8 @@ ADMINS = (
     ('Charles V Bock', 'charles@charlesbock.com'),
 )
 
-LOGIN_URL = '/tenk/auth/'
-LOGIN_REDIRECT_URL = '/tenk/create/'
+LOGIN_URL = '/auth/'
+LOGIN_REDIRECT_URL = '/create/'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 if ROOT_PATH not in sys.path:
@@ -179,5 +179,5 @@ if DEBUG_TOOLBAR:
     }
 
 
-AGE_RANGES = [0,12,17,24,34,44,59,99]
+AGE_RANGES = [0,12,17,24,34,44,55,98,99]
 DEFAULT_BIB = 100

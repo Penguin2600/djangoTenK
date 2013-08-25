@@ -5,6 +5,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^tenk/', include('tenk_dashboard.urls')),
-    url(r'^tenk/admin/', include(admin.site.urls)),
+    url(r'^', include('tenk_dashboard.urls')),
+    url(r'^admin/', include(admin.site.urls), name="tenk_admin"),
 )

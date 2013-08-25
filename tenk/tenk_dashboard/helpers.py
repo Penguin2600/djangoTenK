@@ -37,9 +37,9 @@ def validate_csv_row(row, bib_number):
     if not (row['DIVISION']):
         row['DIVISION']="NONE"
 
-    #If Event is Half Division is Half
-    if row['CATEGORY']=="HALF":
-        row['DIVISION']="HALF"
+    # #If Event is Half Division is Half
+    # if row['CATEGORY']=="HALF":
+    #     row['DIVISION']="HALF"
 
     #If Event is HalfC Division is Half, Event is Half
     if row['CATEGORY']=="HALFC":
@@ -65,20 +65,10 @@ def generate_participant(row, bib_number):
         email=row['EMAIL'],
         age=row['AGE'],
         team_name=row['TEAM']+row['5KTEAM'],
-        gender=Gender.objects.get(shortname=row['GENDER']),
-        shirt_size=Size.objects.get(shortname=row['TSHIRT']),
-        event=Event.objects.get(shortname=row['CATEGORY']),
-        division=Division.objects.get(shortname=row['DIVISION']),
-        registration_type=Registration.objects.get(shortname=row['REGTYPE']),
+        gender=Gender.objects.get(import_name=row['GENDER']),
+        shirt_size=Size.objects.get(import_name=row['TSHIRT']),
+        event=Event.objects.get(import_name=row['CATEGORY']),
+        division=Division.objects.get(import_name=row['DIVISION']),
+        registration_type=Registration.objects.get(import_name=row['REGTYPE']),
         timestamp=timezone.now())
     return new_participant
-
-def get_next_bib(previous_bib=None):
-    if previous_bib:
-        return previous_bib+1
-    else:
-        try:
-            next_bib=Participant.objects.all().aggregate(Max('bib_number'))['bib_number__max']+1
-        except:
-            next_bib=settings.DEFAULT_BIB
-        return next_bib

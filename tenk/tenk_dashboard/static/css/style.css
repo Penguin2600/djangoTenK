@@ -41,11 +41,17 @@ body {
     margin-top: 15px;
 }
 
-.searchbar{
+#searchbar{
     float:right;
     display:block;
     margin-right: 20px;
     line-height: 73px;
+}
+
+.searchform{
+background: url('/static/images/search.png') right no-repeat;
+padding-left:20px;
+background-size: 28px 28px;
 }
 
 /* Set the fixed height of the footer here */

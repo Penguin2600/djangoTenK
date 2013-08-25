@@ -7,7 +7,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('bib_number', 'activeid', 'last_name', 'first_name', 'city', 'state', 'zipcode', 'age', 'event', 'registration_type')
 
 class GenericAdmin(admin.ModelAdmin):
-    list_display = ('name', 'shortname', 'order')
+    list_display = ('name', 'import_name', 'export_name', 'order')
 
 class CSVAdmin(admin.ModelAdmin):
     list_display = ('csvfile', 'starting_bib_number', 'ending_bib_number', 'total_imports')

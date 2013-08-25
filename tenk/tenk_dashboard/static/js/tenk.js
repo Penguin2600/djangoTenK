@@ -33,6 +33,27 @@ jQuery.validator.addMethod("bibnumber", function(value) {
 
 }, "Bib In Use");
 
+jQuery.validator.addMethod("zipcode", function(value, element) {
+    return this.optional(element) ||  /\d{5}-\d{4}$|^\d{5}$|^[a-zA-Z][0-9][a-zA-Z](| )?[0-9][a-zA-Z][0-9]$/.test(value);
+}, "The specified US ZIP Code is invalid");
+
+
+jQuery.validator.addMethod("search_results", function(value) {
+    var isSuccess = false;
+
+    $.ajax({
+        url : '/tenk/checksearch/'+value,
+        async : false,
+        data : {},
+        success : function(output) {
+            isSuccess = output === "false" ? true : false;
+        }
+    });
+
+    return isSuccess;
+
+}, "No Results");
+
 $(document).ready(function() {
 
     $("#id_bib_number").focus();
@@ -53,7 +74,7 @@ $(document).ready(function() {
             first_name : "required",
             last_name : "required",
             zipcode : {
-                digits : true
+                zipcode: true,
             },
             age : {
                 required : true,
@@ -87,7 +108,7 @@ $(document).ready(function() {
             first_name : "required",
             last_name : "required",
             zipcode : {
-                digits : true
+                zipcode: true,
             },
             age : {
                 required : true,
@@ -109,6 +130,5 @@ $(document).ready(function() {
             form.submit();
         }
     });
-
 });
 

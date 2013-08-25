@@ -21,9 +21,13 @@
                 <a class="btn" href={% url 'csv_export' %}>Export</a>
                 <a class="btn" href={% url 'create' %}>Create</a>
                 <a class="btn" href={% url 'quick' %}>Quick</a>
+                <a class="btn" href={% url 'stats' %}>Stats</a>
+                {% if user.is_superuser %}
+                    <a class="btn btn-success" href='/admin'>Admin</a>
+                {% endif %}
                 <a class="btn btn-danger" href={% url 'logout' %}>logout</a>
         </div>
-        <div class="searchbar">
+        <div id="searchbar">
                 <form id="searchform" class="form-search" action="{% url 'search' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ search_form.search }}
