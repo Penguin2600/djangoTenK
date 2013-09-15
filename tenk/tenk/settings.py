@@ -5,7 +5,7 @@ from django.conf import global_settings
 # Django settings for tenk project.
 
 DEBUG = True
-DEBUG_TOOLBAR=True
+DEBUG_TOOLBAR=False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

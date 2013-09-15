@@ -231,12 +231,13 @@ class ExportView(TenkView):
         form = ExportForm(request.POST)
         if form.is_valid():
             fields=ExportSet.objects.get(id=form.data['export_set']).field_names.split()
+            header_fields=ExportSet.objects.get(id=form.data['export_set']).field_headers.split()
             #generate csv headers
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="tenk_export_%s.csv"' % timezone.now()
             writer = csv.writer(response)
             #write header
-            writer.writerow(fields)
+            writer.writerow(header_fields)
             #write csv rows
             participants=Participant.objects.filter(bib_number__range=(form.data['starting_bib'], form.data['ending_bib']))
             for participant in participants:

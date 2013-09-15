@@ -96,6 +96,7 @@ class CSVFile(models.Model):
 # This sucks, build dynamically later.
 class ExportSet(models.Model):
     name = models.CharField(max_length=255)
-    field_names = models.CharField(max_length=65535)
+    field_names = models.CharField(max_length=255)
+    field_headers = models.CharField(max_length=255)
     def __unicode__(self):
         return self.name

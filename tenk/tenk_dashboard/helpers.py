@@ -28,10 +28,10 @@ def validate_csv_row(row, bib_number):
         raise ValidationError('Invalid CSV Conent, existing bib numbers found', code='invalid',)
 
     #Canadians....
-    try:
-        val = int(row['ZIP'])
-    except:
-        row['ZIP']="00000"
+    # try:
+    #     val = int(row['ZIP'])
+    # except:
+    #     row['ZIP']="00000"
 
     #Default Division to "None"
     if not (row['DIVISION']):

@@ -217,21 +217,25 @@
   fields:
     name: 'Bib style'
     field_names: 'first_name last_name gender age shirt_size bib_number event team_name'
+    field_headers: 'FIRSTNAME LASTNAME GENDER AGE TSHIRT BIBNUMBER EVENT TEAM'
 
 - model: tenk_dashboard.Exportset
   pk: 2
   fields:
     name: 'Mail style'
     field_names: 'first_name last_name gender age shirt_size bib_number address_1 address_2 city state zipcode'
+    field_headers: 'FIRSTNAME LASTNAME GENDER AGE TSHIRT BIBNUMBER ADDRESS1 ADDRESS2 CITY STATE ZIPCODE'
 
 - model: tenk_dashboard.Exportset
   pk: 3
   fields:
     name: 'Time style'
     field_names: 'first_name last_name gender age bib_number event team_name division city state'
+    field_headers: 'FIRSTNAME LASTNAME GENDER AGE BIBNUMBER EVENT TEAM DIVISION CITY STATE'
 
 - model: tenk_dashboard.Exportset
   pk: 4
   fields:
     name: 'Everything'
     field_names: 'activeid bib_number last_name first_name address_1 address_2 city state zipcode email age gender shirt_size event division team_name registration_type timestamp'
+    field_headers: 'ACTIVEID BIBNUMBER LASTNAME FIRSTNAME ADDRESS1 ADDRESS2 CITY STATE ZIPCODE EMAIL AGE GENDER TSHIRT EVENT DIVISION TEAM REGTYPE TIMESTAMP'
