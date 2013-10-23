@@ -21,7 +21,7 @@ jQuery.validator.addMethod("bibnumber", function(value) {
     var isSuccess = false;
 
     $.ajax({
-        url : '/tenk/checkbib/'+value,
+        url : '/checkbib/'+value,
         async : false,
         data : {},
         success : function(output) {
@@ -42,7 +42,7 @@ jQuery.validator.addMethod("search_results", function(value) {
     var isSuccess = false;
 
     $.ajax({
-        url : '/tenk/checksearch/'+value,
+        url : '/checksearch/'+value,
         async : false,
         data : {},
         success : function(output) {

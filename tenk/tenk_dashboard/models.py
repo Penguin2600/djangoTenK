@@ -27,6 +27,8 @@ class Event(models.Model):
     export_name = models.CharField(max_length=255)
     order = models.IntegerField(max_length=16)
 
+    class Meta:
+        ordering=['order']
 
     def __unicode__(self):
         return self.name
